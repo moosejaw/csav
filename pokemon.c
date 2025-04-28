@@ -35,21 +35,151 @@ void pkmn_init_12byte_section(unsigned char *psrc, unsigned char secDst[12]) {
 void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
     switch (o) {
-        // TODO all cases
+        case PKMN_DATA_ORDER_GAEM:
+            memcpy(&d->G, &p->data[0],  12);
+            memcpy(&d->A, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
+            break;
         case PKMN_DATA_ORDER_GAME:
             memcpy(&d->G, &p->data[0],  12);
             memcpy(&d->A, &p->data[12], 12);
             memcpy(&d->M, &p->data[24], 12);
             memcpy(&d->E, &p->data[36], 12);
             break;
-        case PKMN_DATA_ORDER_EAMG:
-            // TODO cleanup
-            pkmn_init_12byte_section((unsigned char *)&p->data[0],  (unsigned char *)&d->E);
-            pkmn_init_12byte_section((unsigned char *)&p->data[12], (unsigned char *)&d->A);
-            pkmn_init_12byte_section((unsigned char *)&p->data[24], (unsigned char *)&d->M);
-            pkmn_init_12byte_section((unsigned char *)&p->data[36], (unsigned char *)&d->G);
+        case PKMN_DATA_ORDER_GEAM:
+            memcpy(&d->G, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
             break;
-        default:
+        case PKMN_DATA_ORDER_GEMA:
+            memcpy(&d->G, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->M, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_GMAE:
+            memcpy(&d->G, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->E, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_GMEA:
+            memcpy(&d->G, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AGEM:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AGME:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->M, &p->data[24], 12);
+            memcpy(&d->E, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AEGM:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AEMG:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->M, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AMGE:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->E, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_AMEG:
+            memcpy(&d->A, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EGAM:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EGMA:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->M, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EAGM:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->A, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->M, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EAMG:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->A, &p->data[12], 12);
+            memcpy(&d->M, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EMGA:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_EMAG:
+            memcpy(&d->E, &p->data[0],  12);
+            memcpy(&d->M, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MGAE:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->E, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MGEA:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->G, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MAGE:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->A, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->E, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MAEG:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->A, &p->data[12], 12);
+            memcpy(&d->E, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MEGA:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->G, &p->data[24], 12);
+            memcpy(&d->A, &p->data[36], 12);
+            break;
+        case PKMN_DATA_ORDER_MEAG:
+            memcpy(&d->M, &p->data[0],  12);
+            memcpy(&d->E, &p->data[12], 12);
+            memcpy(&d->A, &p->data[24], 12);
+            memcpy(&d->G, &p->data[36], 12);
+            break;
+        case default:
             memset(d, 0xAE, sizeof(PokemonDataType));
             break;
     }
@@ -80,15 +210,152 @@ uint16_t pkmn_calculate_checksum(PokemonDataType *pd) {
 /// This function writes the inner data block of a Pokemon
 void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
-    // TODO all cases
     switch (o) {
-        case PKMN_DATA_ORDER_EAMG:
-            memcpy(&p->data[0] , &pdt->E,  12);
-            memcpy(&p->data[12], &pdt->A,  12);
-            memcpy(&p->data[24], &pdt->M,  12);
-            memcpy(&p->data[36], &pdt->G,  12);
+        case PKMN_DATA_ORDER_GAEM:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
             break;
-        default:
+        case PKMN_DATA_ORDER_GAME:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_GEAM:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
+            break;
+        case PKMN_DATA_ORDER_GEMA:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_GMAE:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_GMEA:
+            memcpy(&p->data[0],  &pdt->G, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_AGEM:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
+            break;
+        case PKMN_DATA_ORDER_AGME:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_AEGM:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
+            break;
+        case PKMN_DATA_ORDER_AEMG:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case PKMN_DATA_ORDER_AMGE:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_AMEG:
+            memcpy(&p->data[0],  &pdt->A, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case PKMN_DATA_ORDER_EGAM:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
+            break;
+        case PKMN_DATA_ORDER_EGMA:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_EAGM:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->M, 12);
+            break;
+        case PKMN_DATA_ORDER_EAMG:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->M, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case PKMN_DATA_ORDER_EMGA:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_EMAG:
+            memcpy(&p->data[0],  &pdt->E, 12);
+            memcpy(&p->data[12], &pdt->M, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case PKMN_DATA_ORDER_MGAE:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_MGEA:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->G, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_MAGE:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->E, 12);
+            break;
+        case PKMN_DATA_ORDER_MAEG:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->A, 12);
+            memcpy(&p->data[24], &pdt->E, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case PKMN_DATA_ORDER_MEGA:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->G, 12);
+            memcpy(&p->data[36], &pdt->A, 12);
+            break;
+        case PKMN_DATA_ORDER_MEAG:
+            memcpy(&p->data[0],  &pdt->M, 12);
+            memcpy(&p->data[12], &pdt->E, 12);
+            memcpy(&p->data[24], &pdt->A, 12);
+            memcpy(&p->data[36], &pdt->G, 12);
+            break;
+        case default:
             break;
     }
 };
