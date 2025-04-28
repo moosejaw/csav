@@ -183,6 +183,7 @@ int main(void) {
     printf("pkmn checksum (orig): %#X\n", squirtle->checksum);
     const uint16_t pkmn_checksum = pkmn_calculate_checksum(decrypted);
     printf("pkmn checksum (new ): %#X\n", pkmn_checksum);
+    squirtle->checksum = pkmn_checksum;
 
     pkmn_encrypt_decrypt_inner_data(decrypted, (PokemonDataType*)&squirtle->data, decrKey);
     const uint32_t newChecksum = save_checksum_calculate(teamItemsSection);
