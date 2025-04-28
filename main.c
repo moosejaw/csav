@@ -177,7 +177,7 @@ int main(void) {
     pkmn_encrypt_decrypt_inner_data(pdt, decrypted, decrKey);
 
     // give squirtle a move
-    decrypted->A.move4 = SURF;
+    decrypted->A.move4 = MOVE_SURF;
     decrypted->A.ppMove4 = 15;
 
     printf("pkmn checksum (orig): %#X\n", squirtle->checksum);

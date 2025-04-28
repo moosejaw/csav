@@ -36,13 +36,13 @@ void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
     switch (o) {
         // TODO all cases
-        case GAME:
+        case PKMN_DATA_ORDER_GAME:
             memcpy(&d->G, &p->data[0],  12);
             memcpy(&d->A, &p->data[12], 12);
             memcpy(&d->M, &p->data[24], 12);
             memcpy(&d->E, &p->data[36], 12);
             break;
-        case EAMG:
+        case PKMN_DATA_ORDER_EAMG:
             // TODO cleanup
             pkmn_init_12byte_section((unsigned char *)&p->data[0],  (unsigned char *)&d->E);
             pkmn_init_12byte_section((unsigned char *)&p->data[12], (unsigned char *)&d->A);
@@ -82,7 +82,7 @@ void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
     // TODO all cases
     switch (o) {
-        case EAMG:
+        case PKMN_DATA_ORDER_EAMG:
             memcpy(&p->data[0] , &pdt->E,  12);
             memcpy(&p->data[12], &pdt->A,  12);
             memcpy(&p->data[24], &pdt->M,  12);

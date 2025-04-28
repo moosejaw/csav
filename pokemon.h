@@ -106,29 +106,29 @@ void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt);
 uint16_t pkmn_calculate_checksum(PokemonDataType *pd);
 
 enum PkmnDataSubstructure {
-    GAEM,
-    GAME,
-    GEAM,
-    GEMA,
-    GMAE,
-    GMEA,
-    AGEM,
-    AGME,
-    AEGM,
-    AEMG,
-    AMGE,
-    AMEG,
-    EGAM,
-    EGMA,
-    EAGM,
-    EAMG,
-    EMGA,
-    EMAG,
-    MGAE,
-    MGEA,
-    MAGE,
-    MAEG,
-    MEGA,
-    MEAG,
+    PKMN_DATA_ORDER_GAEM,  //  0
+    PKMN_DATA_ORDER_GAME,  //  1
+    PKMN_DATA_ORDER_GEAM,  //  2
+    PKMN_DATA_ORDER_GEMA,  //  3
+    PKMN_DATA_ORDER_GMAE,  //  4
+    PKMN_DATA_ORDER_GMEA,  //  5
+    PKMN_DATA_ORDER_AGEM,  //  6
+    PKMN_DATA_ORDER_AGME,  //  7
+    PKMN_DATA_ORDER_AEGM,  //  8
+    PKMN_DATA_ORDER_AEMG,  //  9
+    PKMN_DATA_ORDER_AMGE,  // 10
+    PKMN_DATA_ORDER_AMEG,  // 11
+    PKMN_DATA_ORDER_EGAM,  // 12
+    PKMN_DATA_ORDER_EGMA,  // 13
+    PKMN_DATA_ORDER_EAGM,  // 14
+    PKMN_DATA_ORDER_EAMG,  // 15
+    PKMN_DATA_ORDER_EMGA,  // 16
+    PKMN_DATA_ORDER_EMAG,  // 17
+    PKMN_DATA_ORDER_MGAE,  // 18
+    PKMN_DATA_ORDER_MGEA,  // 19
+    PKMN_DATA_ORDER_MAGE,  // 20
+    PKMN_DATA_ORDER_MAEG,  // 21
+    PKMN_DATA_ORDER_MEGA,  // 22
+    PKMN_DATA_ORDER_MEAG,  // 23
 };
 #endif //PKMN_SUBSTRUCTS_H
