@@ -179,8 +179,7 @@ void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
             memcpy(&d->A, &p->data[24], 12);
             memcpy(&d->G, &p->data[36], 12);
             break;
-        case default:
-            memset(d, 0xAE, sizeof(PokemonDataType));
+        default:
             break;
     }
 }
@@ -202,7 +201,7 @@ uint16_t pkmn_calculate_checksum(PokemonDataType *pd) {
     uint16_t *ptr = (uint16_t *)pd;
     for (int i=0; i < sizeof(PokemonDataType) / sizeof(uint16_t); i++) {
         calc += ptr[i];
-        printf("cur: %#X / word: %#X / pos: %p\n", ptr[i], calc, ptr);
+        fprintf(stderr, "cur: %#X / word: %#X / pos: %p\n", ptr[i], calc, ptr);
     }
     return calc;
 }
@@ -355,7 +354,7 @@ void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt) {
             memcpy(&p->data[24], &pdt->A, 12);
             memcpy(&p->data[36], &pdt->G, 12);
             break;
-        case default:
+        default:
             break;
     }
 };

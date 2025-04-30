@@ -1,7 +1,3 @@
-//
-// Created by josh on 27/04/2025.
-//
-
 #ifndef MOVES_H
 #define MOVES_H
 

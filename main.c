@@ -1,7 +1,7 @@
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
 
 #include "moves.h"
 #include "pokemon.h"
@@ -161,9 +161,6 @@ int main(void) {
     memcpy(tiData->pokemon[0].nickname, &newNick, 11);
 
     Pokemon *squirtle = &tiData->pokemon[0];
-    const enum PkmnDataSubstructure s = pkmn_get_substructure_order(squirtle);
-    printf("Pokemon's personality value mod 24: %u\n", s);
-
 
     unsigned char revData[sizeof(PokemonDataType)] = {};
     memcpy(&revData, &squirtle->data, sizeof(PokemonDataType));
@@ -176,6 +173,9 @@ int main(void) {
     PokemonDataType *decrypted = (PokemonDataType*)calloc(1, sizeof(PokemonDataType));
     pkmn_encrypt_decrypt_inner_data(pdt, decrypted, decrKey);
 
+    const uint16_t orig_pkmn_checksum = pkmn_calculate_checksum(decrypted);
+    printf("pkmn checksum (calc): %#X\n", orig_pkmn_checksum);
+
     // give squirtle a move
     decrypted->A.move4 = MOVE_SURF;
     decrypted->A.ppMove4 = 15;
@@ -184,30 +184,17 @@ int main(void) {
     const uint16_t pkmn_checksum = pkmn_calculate_checksum(decrypted);
     printf("pkmn checksum (new ): %#X\n", pkmn_checksum);
     squirtle->checksum = pkmn_checksum;
+    // TODO is language getting mangled? (writing too many bytes from nickname?)
+    squirtle->language = 0x2;
 
-    pkmn_encrypt_decrypt_inner_data(decrypted, (PokemonDataType*)&squirtle->data, decrKey);
+    PokemonDataType buf = {};
+    pkmn_encrypt_decrypt_inner_data(decrypted, &buf, decrKey);
+    pkmn_write_inner_data(squirtle, &buf);
     const uint32_t newChecksum = save_checksum_calculate(teamItemsSection);
     teamItemsSection->checksum = newChecksum;
 
     printf("\n");
 
-    // unsigned char nicknamebuf[10];
-    // memcpy(&nicknamebuf, tiData->pokemon[0].nickname, 10);
-    // printf("Nickname bytes: ");
-    // for (int i=0; i < 10; i++) {
-    //     printf("%#X ", nicknamebuf[i]);
-    // }
-
-    // // Section *section = save_get_section_by_id(latestBlock, 0);
-    // // print_section_addr(section, &saveFile);
-    // // TrainerInfo *tinfo = (TrainerInfo*)section->data;
-    // // tinfo->playerGender = 0x1;
-    // //
-    // // memcpy(tinfo->playerName, encoded, sizeof(encoded));
-    // //
-    // // const uint32_t newChecksum = checksum_calculate(section, latestBlock);
-    // // section->checksum = newChecksum;
-    //
     FILE *dump = fopen("/Users/josh/gba/dump.sav", "w");
     if (dump == NULL) { return 1; }
     const size_t fw = fwrite(&saveFile, sizeof(SaveFile), 1, dump);

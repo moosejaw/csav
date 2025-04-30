@@ -43,16 +43,13 @@ typedef struct {
 } Pokemon;
 /// /POKEMON OUTER STRUCTURE
 
-unsigned pkmn_get_substructure_order(const Pokemon *p);
-
-
 /// DATA SUBSTRUCTURE ELEMENT DEFINITIONS
 typedef struct {
     uint16_t species;
     uint16_t heldItem;
     uint32_t exp;
-    uint8_t ppBonuses;
-    uint8_t friendship;
+    uint8_t  ppBonuses;
+    uint8_t  friendship;
     uint16_t _unused;
 } Growth;
 
@@ -61,10 +58,10 @@ typedef struct {
     uint16_t move2;
     uint16_t move3;
     uint16_t move4;
-    uint8_t ppMove1;
-    uint8_t ppMove2;
-    uint8_t ppMove3;
-    uint8_t ppMove4;
+    uint8_t  ppMove1;
+    uint8_t  ppMove2;
+    uint8_t  ppMove3;
+    uint8_t  ppMove4;
 } Attacks;
 
 typedef struct {
@@ -98,8 +95,9 @@ typedef struct {
     EvsCondition E;
 } PokemonDataType;
 
-uint32_t pkmn_get_inner_data_decryption_key(const Pokemon *p);
+unsigned pkmn_get_substructure_order(const Pokemon *p);
 
+uint32_t pkmn_get_inner_data_decryption_key(const Pokemon *p);
 void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p);
 void pkmn_encrypt_decrypt_inner_data(PokemonDataType *src, PokemonDataType *dst, const uint32_t key);
 void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt);
