@@ -1,49 +1,47 @@
-//
-// Created by josh on 21/04/2025.
-//
-
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "util.h"
+#include "csav_text.h"
 
-short text_encode(const char *is, unsigned char *os, const size_t ilen, const size_t olen) {
-    // Encode the input string `is` of length `ilen` using the proprietary encoding,
-    // storing the result in `os`, where `olen` is the length of the output string.
-    // If a string terminator character is encountered before the encoder has encoded
-    // `ilen` characters, the encoder stops, and all remaining space in `os`
-    //  is filled with `0xFF`.
-    //
-    // Any unfilled characters in `os` are replaced with `0xFF`.
-    // Any characters that are not recognised by the encoder are converted to `0x00`.
-    //
-    // If `ilen` > `olen`, `0` is returned.
-    //
-    // TODO find a way of dealing with special characters, i.e,
-    // case "♂":
-    //     encoded_char = 0xB5;
-    //     break;
-    // case '♀':
-    //     encoded_char = 0xB6;
-    //     break;
-    // case '‥':
-    //     encoded_char = 0xB0;
-    //     break;
-    // case '“':
-    //     encoded_char = 0xB1;
-    //     break;
-    // case '”':
-    //     encoded_char = 0xB2;
-    //     break;
-    // case '‘':
-    //     encoded_char = 0xB3;
-    //     break;
+/*
+ * Encode the input string `is` of length `ilen` using the proprietary encoding,
+ * storing the result in `os`, where `olen` is the length of the output string.
+ * If a string terminator character is encountered before the encoder has encoded
+ * `ilen` characters, the encoder stops, and all remaining space in `os`
+ *  is filled with `0xFF`.
+ *
+ * Any unfilled characters in `os` are replaced with `0xFF`.
+ * Any characters that are not recognised by the encoder are converted to `0x00`.
+ *
+ * If `ilen` > `olen`, `0` is returned.
+ *
+ * TODO find a way of dealing with special characters, i.e,
+ *  case "♂":
+ *      encoded_char = 0xB5;
+ *      break;
+ *  case '♀':
+ *      encoded_char = 0xB6;
+ *      break;
+ *  case '‥':
+ *      encoded_char = 0xB0;
+ *      break;
+ *  case '“':
+ *      encoded_char = 0xB1;
+ *      break;
+ *  case '”':
+ *      encoded_char = 0xB2;
+ *      break;
+ *  case '‘':
+ *      encoded_char = 0xB3;
+ *      break;
+ */
+size_t
+text_encode(const char *is, unsigned char *os, const size_t ilen, const size_t olen) {
     if (ilen > olen) { return 0; }
 
     memset(os, 0xFF, olen);
 
-    short ecount = 0;
+    size_t ecount = 0;
     for (size_t i = 0; i < ilen; i++) {
         if (is[i] == '\0') break;
         unsigned char encoded_char;
@@ -266,13 +264,4 @@ short text_encode(const char *is, unsigned char *os, const size_t ilen, const si
         printf("(encode) idx: %lu, in: %c out: %hhX\n", i, is[i], os[i]);
     }
     return ecount;
-}
-
-void bytes_reverse(unsigned char *src, const unsigned len) {
-    // Reverses the byte order of `src` by swapping `len` bytes.
-    for (int i = 0; i < len / 2; i++) {
-        const unsigned char buf = src[i];
-        src[i] = src[len - 1 - i];
-        src[len - 1 - i] = buf;
-    }
 }

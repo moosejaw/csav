@@ -1,10 +1,18 @@
 #ifndef PKMN_SUBSTRUCTS_H
 #define PKMN_SUBSTRUCTS_H
+
 #include <inttypes.h>
 
-
-
-/// POKEMON OUTER STRUCTURE
+/*
+ * isBadEgg   : mon is a BAD EGG. should never be set.
+ * hasSpecies : should always be set.
+ * useEggName : mon's nickname is "EGG". don't set.
+ * blockBoxRS : mon can't be deposited into boxes in ruby/sapphire? don't set.
+ *
+ * see: https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_data_structure_(Generation_III)#Misc._Flags
+ *
+ * TODO these are bits, not bytes. Should probably use an enum here?
+ */
 typedef struct {
     unsigned char isBadEgg;
     unsigned char hasSpecies;
@@ -19,31 +27,16 @@ typedef struct {
     uint32_t         personalityValue;
     uint32_t         otId;
     unsigned char    nickname[10];
-    uint8_t          language; // TODO ensure has_species bit is set in here when adding new pokemon.
+    uint8_t          language;
     unsigned char    miscFlags;
     unsigned char    otName[7];
     uint8_t          markings;
     uint16_t         checksum;
     uint16_t         _unknown;
     PokemonDataBlock data;
-
-    // Part of the full 100-byte structure of a Pokemon, but not used
-    // when in a save file:
-    //
-    // uint32_t statusCondition;
-    // uint8_t level;
-    // uint8_t mailId;
-    // uint16_t currentHp;
-    // uint16_t totalHp;
-    // uint16_t attackStat;
-    // uint16_t defenseStat;
-    // uint16_t speedStat;
-    // uint16_t specialAttackStat;
-    // uint16_t specialDefenseStat;
 } Pokemon;
-/// /POKEMON OUTER STRUCTURE
 
-/// DATA SUBSTRUCTURE ELEMENT DEFINITIONS
+
 typedef struct {
     uint16_t species;
     uint16_t heldItem;
@@ -95,7 +88,7 @@ typedef struct {
     EvsCondition E;
 } PokemonDataType;
 
-unsigned pkmn_get_substructure_order(const Pokemon *p);
+static unsigned pkmn_get_substructure_order(const Pokemon *p);
 
 uint32_t pkmn_get_inner_data_decryption_key(const Pokemon *p);
 void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p);
@@ -129,4 +122,5 @@ enum PkmnDataSubstructure {
     PKMN_DATA_ORDER_MEGA,  // 22
     PKMN_DATA_ORDER_MEAG,  // 23
 };
+
 #endif //PKMN_SUBSTRUCTS_H

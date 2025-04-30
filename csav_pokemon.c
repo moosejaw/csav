@@ -1,38 +1,35 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "pokemon.h"
+#include "csav_pokemon.h"
+#include "csav_text.h"
 
-#include "util.h"
-
-/// The substructure order, o, is determined by the Pokemon's personality
-/// value mod 24.
-/// The value of o corresponds to a particular order represented in the enum
-/// PkmnSubstructure.
-unsigned pkmn_get_substructure_order(const Pokemon *p) {
-    uint32_t pval = p->personalityValue;
-    return pval % 24;
+/*
+ * The substructure order, `o`, is determined by the Pokemon's personality value mod 24.
+ *
+ * The value of `o` corresponds to a particular order represented in the enum PkmnSubstructure.
+ */
+static unsigned
+pkmn_get_substructure_order(const Pokemon *p) {
+    return p->personalityValue % 24;
 }
 
-uint32_t pkmn_get_inner_data_decryption_key(const Pokemon *p) {
+/*
+ * The 'decryption key', which also happens to be the same key used to encrypt the data,
+ * is the 32-bit 'personality value' mod 'OT ID'. Essentially, the unique value of the
+ * mon mod the unique value of its original trainer.
+ */
+uint32_t
+pkmn_get_inner_data_decryption_key(const Pokemon *p) {
     return p->personalityValue ^ p->otId;
 };
 
-void pkmn_init_12byte_section(unsigned char *psrc, unsigned char secDst[12]) {
-    // TODO this func isn't necessary as we don't need to reverse bytes anymore(?)
-    // Initialises a 12-byte section by reversing each 4-byte word
-    // in the starting address `psrc` and writing the output words
-    // to `secDst` contiguously.
-    uint32_t wordbuf = 0;
-    uint32_t *word = (uint32_t *)psrc;
-    for (int i = 0; i < 12; i+= 4) {
-        memcpy(&wordbuf, word, sizeof(uint32_t));
-        memcpy(&secDst[i], &wordbuf, sizeof(uint32_t));
-        word++;
-    }
-}
-
-void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
+/*
+ * Initialise a `PokemonDataType`, `d`, according to the derived data substructure
+ * order of Pokemon `p`.
+ */
+void
+pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
     switch (o) {
         case PKMN_DATA_ORDER_GAEM:
@@ -184,9 +181,20 @@ void pkmn_init_inner_data(PokemonDataType *d, const Pokemon *p) {
     }
 }
 
-// TODO modify inplace?
-void pkmn_encrypt_decrypt_inner_data(PokemonDataType *src, PokemonDataType *dst, const uint32_t key) {
-    // XOR 4 bytes at a time.
+/*
+ * Encrypt and/or decrypt a block of Pokemon data pointed to by `src`, using `key`.
+ * If you pass encrypted data, it will be decrypted and vice versa.
+ *
+ * En/decryption is performed by taking 4 bytes of data at a time from the block,
+ * and XORing those bytes against the key.
+ *
+ * TODO modify inplace?
+ * TODO probably only decrypted data will be passed to this func as a PokemonDataType.
+ *   while strictly it doesn't matter what type src and dest are (we can cast as needed),
+ *   it makes more sense to use a generic type. PokemonDataBlock? (which is just an unsigned char[48]?)
+ */
+void
+pkmn_encrypt_decrypt_inner_data(PokemonDataType *src, PokemonDataType *dst, const uint32_t key) {
     uint32_t *srcp = (uint32_t *)src;
     uint32_t *dstp = (uint32_t *)dst;
     for (int i=0; i < sizeof(PokemonDataType) / sizeof(uint32_t); i++) {
@@ -196,7 +204,14 @@ void pkmn_encrypt_decrypt_inner_data(PokemonDataType *src, PokemonDataType *dst,
     }
 }
 
-uint16_t pkmn_calculate_checksum(PokemonDataType *pd) {
+/*
+ * Calculate the checksum for a Pokemon data block.
+ * This just the sum of all 16 bit words in the data block.
+ *
+ * see: https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_data_structure_(Generation_III)#Checksum
+ */
+uint16_t
+pkmn_calculate_checksum(PokemonDataType *pd) {
     uint16_t calc = 0;
     uint16_t *ptr = (uint16_t *)pd;
     for (int i=0; i < sizeof(PokemonDataType) / sizeof(uint16_t); i++) {
@@ -206,8 +221,13 @@ uint16_t pkmn_calculate_checksum(PokemonDataType *pd) {
     return calc;
 }
 
-/// This function writes the inner data block of a Pokemon
-void pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt) {
+/*
+ * Write `pdt` to a `Pokemon` `p`.
+ *
+ * This function writes based on the mon's substructure order.
+ */
+void
+pkmn_write_inner_data(const Pokemon *p, const PokemonDataType *pdt) {
     const enum PkmnDataSubstructure o = pkmn_get_substructure_order(p);
     switch (o) {
         case PKMN_DATA_ORDER_GAEM:

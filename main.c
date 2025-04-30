@@ -1,122 +1,14 @@
 #include <inttypes.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>  // malloc etc.
 #include <string.h>
 
-#include "moves.h"
-#include "pokemon.h"
-#include "util.h"
+#include "csav_moves.h"
+#include "csav_pokemon.h"
+#include "csav_text.h"
+#include "csav_save.h"
 
 size_t SIZE_GAME_SAVE = 57344;
-
-typedef unsigned char Data[3968];
-typedef uint16_t SectionId;
-typedef uint16_t Checksum;
-typedef uint32_t Signature;
-typedef uint32_t SaveIndex;
-
-typedef struct {
-    Data          data;
-    unsigned char _padding[116];
-    SectionId     sectionId;
-    Checksum      checksum;
-    Signature     signature;
-    SaveIndex     saveIndex;
-} Section;
-
-typedef Section SaveBlock[14];
-
-typedef struct {
-    SaveBlock     saveBlocks[2];
-    unsigned char hallOfFame[8192];
-    unsigned char mysteryGift[4096];
-    unsigned char recordedBattle[4096];
-} SaveFile;
-
-typedef struct {
-    unsigned char playerName[8];
-    unsigned char playerGender;
-    unsigned char _unused;
-    unsigned char trainerId[4];
-    unsigned char options[3];
-    unsigned char gameCode[4];
-    unsigned char securityKey[4];
-} TrainerInfo;
-
-typedef struct {
-    unsigned char _unused[52];
-    unsigned char teamSize[4];
-    Pokemon       pokemon[6];
-    unsigned char money[4];
-    unsigned char coins[2];
-    unsigned char pcItems[120];
-    unsigned char itemPocket[168];
-    unsigned char keyItemPocket[120];
-    unsigned char ballItemPocket[52];
-    unsigned char tmCase[232];
-    unsigned char berryPocket[172];
-} TeamItems;
-
-SaveBlock *save_get_latest_block(const SaveFile *save) {
-    // Based on input SaveFile `save`, this function returns a pointer to the SaveBlock that
-    // was most recently saved by the player.
-    //
-    // It does this by checking the save index value of the first section of each save block,
-    // returning the corresponding save block to the largest save index value.
-    const SaveIndex a = save->saveBlocks[0][0].saveIndex, b = save->saveBlocks[1][0].saveIndex;
-    return a > b ? (SaveBlock*)save->saveBlocks[0] : (SaveBlock*)save->saveBlocks[1];
-}
-
-Section *save_get_section_by_id(SaveBlock *block, const unsigned id) {
-    // Returns a pointer to a game save Section, within the given SaveBlock `block`,
-    // based on input ID `id`.
-    Section *section = block[0];
-    for (size_t i = 0; i < 14; i++) {
-        if (section->sectionId == id) return section;
-        section++;
-    }
-    return NULL;
-}
-
-void print_section_addr(const Section *s, SaveFile *sf) {
-    // Prints the starting address of the given Section `*s` in memory, relative to the
-    // starting address of the entire save file denoted by `*sf`.
-    const unsigned long addr = (unsigned long)s - (unsigned long)sf;
-    printf("Address of section : %#lx\n", addr);
-}
-
-uint16_t save_checksum_calculate(const Section *s) {
-    // Calculate and return a checksum value for the input section pointed to by `s`.
-
-    // Determine how many bytes to process
-    unsigned numValidateBytes;
-    switch (s->sectionId) {
-        case 0:
-            numValidateBytes = 3884; break;
-        case 4:
-            numValidateBytes = 3848; break;
-        case 13:
-            numValidateBytes = 2000; break;
-        default:
-            numValidateBytes = 3968; break;
-    }
-    printf("(checksum) section id: %u no. validate bytes: %u\n", s->sectionId, numValidateBytes);
-
-    // Calculate the checksum value
-    uint32_t checksum = 0;
-    for (int i = 0; i <= numValidateBytes; i+=4) {
-        const uint32_t word;
-        memcpy(&word, s->data + i, 4);
-        checksum += word;
-    }
-    const uint16_t checksum_upper = (checksum & (0xFFFF) << (16)) >> 16;
-    const uint16_t checksum_lower = (checksum) & 0xFFFF;
-    printf("(checksum) intermed. upper: %#x , intermed. lower: %#x\n", checksum_upper, checksum_lower);
-
-    checksum = checksum_upper + checksum_lower;
-    printf("(checksum) original: %#x // calculated: %#x\n", s->checksum, checksum);
-    return checksum;
-}
 
 int main(void) {
     // Try encoding some characters.
@@ -126,7 +18,7 @@ int main(void) {
     printf("You entered the name: %s\n", name);
 
     unsigned char newNick[11];
-    const short e = text_encode(name, newNick, sizeof(name), sizeof(newNick));
+    const size_t e = text_encode(name, newNick, sizeof(name), sizeof(newNick));
     if (e == 0) { return 1; }
 
     FILE *savData = fopen("/Users/josh/gba/pkmn_fr.sav", "r");
@@ -147,7 +39,7 @@ int main(void) {
      */
     SaveBlock *latestBlock = save_get_latest_block(&saveFile);
     Section *teamItemsSection = save_get_section_by_id(latestBlock, 1);
-    print_section_addr(teamItemsSection, &saveFile);
+    save_print_section_addr(teamItemsSection, &saveFile);
 
     TeamItems *tiData = (TeamItems*)teamItemsSection->data;
     unsigned char *ptr = tiData->pokemon[0].nickname;
@@ -184,6 +76,7 @@ int main(void) {
     const uint16_t pkmn_checksum = pkmn_calculate_checksum(decrypted);
     printf("pkmn checksum (new ): %#X\n", pkmn_checksum);
     squirtle->checksum = pkmn_checksum;
+
     // TODO is language getting mangled? (writing too many bytes from nickname?)
     squirtle->language = 0x2;
 

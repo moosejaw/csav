@@ -1,6 +1,10 @@
 #ifndef MOVES_H
 #define MOVES_H
 
+/*
+ * Enumerated moves used in the game.
+ * Each member name is equivalent to its value used in the game.
+ */
 enum Moves {
     MOVE_EMPTY_MOVE    ,  // 0X0
     MOVE_POUND         ,  // 0X1
