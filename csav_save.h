@@ -7,6 +7,22 @@
 
 #include "csav_pokemon.h"
 
+enum SaveSectionId {
+    SAVE_SECTION_TRAINER_INFO , // 0
+    SAVE_SECTION_TEAM_ITEMS   , // 1
+    SAVE_SECTION_GAME_STATE   , // 2
+    SAVE_SECTION_MISC_DATA    , // 3
+    SAVE_SECTION_RIVAL_INFO   , // 4
+    SAVE_SECTION_PC_BUFFER_A  , // 5
+    SAVE_SECTION_PC_BUFFER_B  , // 6
+    SAVE_SECTION_PC_BUFFER_C  , // 7
+    SAVE_SECTION_PC_BUFFER_D  , // 8
+    SAVE_SECTION_PC_BUFFER_E  , // 9
+    SAVE_SECTION_PC_BUFFER_F  , // 10
+    SAVE_SECTION_PC_BUFFER_G  , // 11
+    SAVE_SECTION_PC_BUFFER_H  , // 12
+    SAVE_SECTION_PC_BUFFER_I  , // 13
+};
 
 typedef unsigned char Data[3968];
 typedef uint16_t SectionId;
@@ -36,7 +52,7 @@ typedef struct {
     unsigned char playerName[8];
     unsigned char playerGender;
     unsigned char _unused;
-    unsigned char trainerId[4];
+    uint32_t      trainerId;
     unsigned char options[3];
     unsigned char gameCode[4];
     unsigned char securityKey[4];

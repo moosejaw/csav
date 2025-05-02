@@ -11,4 +11,8 @@ add_executable(csav main.c
         csav_moves.h
         csav_save.c
         csav_save.h
+        csav_dex.h
+        csav_items.h
+        csav_locations.h
+        csav_moves.c
 )

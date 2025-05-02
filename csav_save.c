@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "csav_save.h"
+#include "csav_pokemon.h"
 
 /*
  * Based on input SaveFile `save`, return a pointer to the SaveBlock that
@@ -18,11 +19,9 @@ SaveBlock
 
 /*
  * Return a pointer to a Section in `block` with the specified `id`.
- *
- * TODO section ID should really be an enum in its own right
  */
 Section
-*save_get_section_by_id(SaveBlock *block, const unsigned id) {
+*save_get_section_by_id(SaveBlock *block, const enum SaveSectionId id) {
     Section *section = block[0];
     for (size_t i = 0; i < 14; i++) {
         if (section->sectionId == id) return section;
@@ -72,7 +71,7 @@ save_checksum_calculate(const Section *s) {
     uint32_t checksum = 0;
     for (int i = 0; i <= numValidateBytes; i+=4) {
         const uint32_t word;
-        memcpy(&word, s->data + i, 4);
+        memcpy((uint32_t *)&word, s->data + i, 4);
         checksum += word;
     }
     const uint16_t checksum_upper = (checksum & (0xFFFF) << (16)) >> 16;
